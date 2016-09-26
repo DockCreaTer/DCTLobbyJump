@@ -1,0 +1,13 @@
+## PressureJump by TSRlightda ##
+## 你可以在->http://www.tsr.tw/PMPL/找到一些實用的插件(大多是繁化) ##
+## 設定中的 Strength 跟 Up 是默認數字,請自行更改.例如:1.5 ##
+## Strength 是被推動的距離 ##
+## Up 是被推高的高度 ##
+## 祝有個愉快的一天,好好享受插件:D ##
+## Sound 可以被設置 : 0-4, 0 就是無聲 ##
+Strength: 1.5
+Up: 1.0
+mobUse: true
+Sound: 1
+NoFallDamageTimeMob: 3
+UnlimitedPlates: true

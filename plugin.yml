@@ -1,0 +1,17 @@
+name: PPjump
+main: PPjump\PPjump
+version: 1.0.0
+author: TSRlightda
+commands:
+ start create:
+  description: Set up PPjump
+  usage: "/ppjump on"
+  permission: op
+ stop create:
+  description:  Stop to set up PPjump 
+  usage: "/ppjump off"
+  permission: op
+ load:
+  description: reload config.yml
+  usage: "/ppjump load"
+  permission: op
