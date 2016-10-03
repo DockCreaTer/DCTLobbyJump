@@ -5,6 +5,9 @@ namespace PPjump;
 use pocketmine\block\PressurePlate;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
+use pocketmine\event\block\BlockBreakEvent;
+use pocketmine\event\block\BlockPlaceEvent;
+use pocketmine\event\block\BlockUpdateEvent
 use pocketmine\event\Listener;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
