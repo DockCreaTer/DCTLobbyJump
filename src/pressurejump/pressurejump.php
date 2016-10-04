@@ -20,7 +20,6 @@ use pocketmine\utils\Config;
 class pressurejump extends PluginBase implements Listener{
 
     public function onEnable(){
-		    public function onEnable(){
       $this->getServer()->getPluginManager()->registerEvents($this, $this);
       if(!file_exists($this->getDataFolder())){
         $this->getLogger()->info("§b建立PressureJump資料夾中!");
@@ -44,4 +43,4 @@ class pressurejump extends PluginBase implements Listener{
           }
 
 
-		  public function 
+    public function 
