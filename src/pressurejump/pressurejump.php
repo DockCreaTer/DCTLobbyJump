@@ -19,14 +19,16 @@ use pocketmine\utils\Config;
 
 class pressurejump extends PluginBase implements Listener{
 
-    public function onEnable(){
-      $this->getServer()->getPluginManager()->registerEvents($this, $this);
-      if(!file_exists($this->getDataFolder())){
-        $this->getLogger()->info("§b建立PressureJump資料夾中!");
-        @mkdir($this->saveDataFolder());
-	  }
-    public function onDisable(){
-        $this->getLogger()->info("§a壓力板彈跳(PresurreJump)已關閉");
+    public function onEnable() {
+        System.out.println("[PressurePush] Enabled");
+        Bukkit.getPluginManager()->registerEvents(this, this);
+        getConfig()->options()->copyDefaults(true);
+        @mkdir->saveDefaultConfig();
+    }
+
+   public function onDisable() {
+        @mkdir->saveDefaultConfig();
+        System.out.println("[PressurePush] Disabled");
     }
 
 	
