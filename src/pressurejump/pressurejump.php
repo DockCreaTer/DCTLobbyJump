@@ -19,30 +19,176 @@ use pocketmine\utils\Config;
 
 class pressurejump extends PluginBase implements Listener{
 
-    public function onEnable() {
-        System.out.println("[PressurePush] Enabled");
-        Bukkit.getPluginManager()->registerEvents(this, this);
-        getConfig()->options()->copyDefaults(true);
-        @mkdir->saveDefaultConfig();
-    }
-
-   public function onDisable() {
-        @mkdir->saveDefaultConfig();
+    public function onDisable() {
+        saveDefaultConfig();
         System.out.println("[PressurePush] Disabled");
     }
 
-	
-    public function onCommand(CommandSender $sender, Command $command, $alias, array $args){
-          if(!isset($args[0])){
-              return false;
-          }
-          if(!$sender->isOp()){
-            $this->getServer()->broadcastMessage($sender->getName(). "使用PJ指令");
-            $sender->sendMessage("§4你不是OP");
+    public function onEnable() {
+        System.out.println("[PressurePush] Enabled");
+        Bukkit.getPluginManager().registerEvents(this, this);
+        getConfig().options().copyDefaults(true);
+        saveDefaultConfig();
+    }
+
+    public function onCommand(CommandSender sender, Command cmd, String cmdLabel, String[] args) {
+        Player player = (Player) sender;
+        if (!player.hasPermission("pp.admin")) {
+            player.sendMessage(ChatColor.RED + "You don't have permission to use this command");
             return true;
-          }else{
-            $sender->sendMessage("§6玩家");
-          }
+        }
 
+        if (cmd.getName().equalsIgnoreCase("pressurepush")) {
+            for (String s : getConfig().getStringList("help")) {
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', s).replace("{version}", getDescription().getVersion()));
+            }
+            return true;
+        }
 
-    public function 
+        if (cmd.getName().equalsIgnoreCase("ppload")) {
+            if (!sender.isOp()) return true;
+            reloadConfig();
+            saveConfig();
+            if (sender instanceof Player) {
+                createactive.add(player.getName());
+            }
+            sender.sendMessage(ChatColor.AQUA + "-> PressurePush config has been reloaded <-");
+        }
+
+        if (cmd.getName().equalsIgnoreCase("ppcreate")) {
+            if (args.length == 0) {
+                for (String s : getConfig().getStringList("help")) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', s).replace("{version}", getDescription().getVersion()));
+                }
+            } else if (args[0].equalsIgnoreCase("on") && player.hasPermission("pp.create")) {
+                createactive.add(player.getName());
+                player.sendMessage(ChatColor.GOLD + "Place the pressure plate somewhere to make it a PressurePush plate, type the command again to disable it");
+                if (getConfig().getBoolean("UnlimitedPlates") == true) {
+                    player.getInventory().addItem(new ItemStack(Material.STONE_PLATE, -1));
+                    player.getInventory().addItem(new ItemStack(Material.WOOD_PLATE, -1));
+                }
+            } else if (args[0].equalsIgnoreCase("off") && player.hasPermission("pp.create")) {
+                createactive.remove(player.getName());
+                player.sendMessage(ChatColor.RED + "You've de-toggled the creation of PressurePush plates!");
+                if (getConfig().getBoolean("UnlimitedPlates") == true) {
+                    player.getInventory().removeItem(new ItemStack(Material.STONE_PLATE, -1));
+                    player.getInventory().removeItem(new ItemStack(Material.WOOD_PLATE, -1));
+                }
+            } else {
+                player.sendMessage(ChatColor.RED + "You don't have permission to use this command");
+                return true;
+            }
+        }
+        return true;
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public function BlockPlaceEvent(BlockPlaceEvent event) {
+        Player p = event.getPlayer();
+        if (!p.hasPermission("pp.create")) {
+            return;
+        }
+        if (!createactive.contains(p.getName())) {
+            return;
+        }
+        if (event.getBlock().getType() == Material.STONE_PLATE || event.getBlock().getType() == Material.WOOD_PLATE) {
+            Location location = event.getBlock().getLocation();
+            String loc = location.getBlockX() + "-" + location.getBlockY() + "-" + location.getBlockZ() + "-" + location.getWorld().getName();
+
+            p.sendMessage(ChatColor.GREEN + "You've successfully made a PressurePush Plate");
+
+            List<String> locs = getConfig().getStringList("Plates.location");
+            if (!locs.contains(loc)) {
+                locs.add(loc);
+                getConfig().set("Plates.location", locs);
+                saveConfig();
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public function BlockBreakEvent(BlockBreakEvent event) {
+        Player p = event.getPlayer();
+        if (!p.hasPermission("pp.destroy")) {
+            return;
+        }
+        Location location = event.getBlock().getLocation();
+        String loc = location.getBlockX() + "-" + location.getBlockY() + "-" + location.getBlockZ() + "-" + location.getWorld().getName();
+        List<String> locs = getConfig().getStringList("Plates.location");
+        if (!locs.contains(loc)) {
+            return;
+        }
+        if (event.getBlock().getType() == Material.STONE_PLATE || event.getBlock().getType() == Material.WOOD_PLATE) {
+            locs.remove(loc);
+            getConfig().set("Plates.location", locs);
+            saveConfig();
+
+            event.getPlayer().sendMessage(ChatColor.RED + "You have removed a PressurePush plate");
+        }
+    }
+
+    @EventHandler
+    public function damageEvent(EntityDamageEvent e) {
+        if (e.getCause() == DamageCause.FALL && e.getEntity() instanceof Player) {
+            Player p = (Player) e.getEntity();
+            if (disableFall.contains(p.getName())) {
+                e.setCancelled(true);
+                disableFall.remove(p.getName());
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public function onPressurePlateStep(PlayerInteractEvent e) {
+        Player p = e.getPlayer();
+        if (!p.hasPermission("pp.use")) {
+            return;
+        }
+        if (e.getAction().equals(Action.PHYSICAL) && (p.hasPermission("pp.use") && e.getClickedBlock().getType() == Material.STONE_PLATE
+                || e.getClickedBlock().getType() == Material.WOOD_PLATE)) {
+            double strength = getConfig().getDouble("Strength");
+            double up = getConfig().getDouble("Up");
+            Location location = e.getClickedBlock().getLocation();
+            String loc = location.getBlockX() + "-" + location.getBlockY() + "-" + location.getBlockZ() + "-" + location.getWorld().getName();
+            List<String> locs = getConfig().getStringList("Plates.location");
+            if (!locs.contains(loc)) {
+                return;
+            }
+            if (getConfig().getInt("Sound") == 0) {
+                Vector v = p.getLocation().getDirection().multiply(strength).setY(up);
+                p.setVelocity(v);
+                e.setCancelled(true);
+            }
+
+            if (getConfig().getInt("Sound") == 1) {
+                Vector v = p.getLocation().getDirection().multiply(strength).setY(up);
+                p.setVelocity(v);
+                p.playSound(p.getLocation(), Sound.ENTITY_ENDERDRAGON_HURT, 10.0F, 2.0F);
+                e.setCancelled(true);
+            }
+
+            if (getConfig().getInt("Sound") == 2) {
+                Vector v = p.getLocation().getDirection().multiply(strength).setY(up);
+                p.setVelocity(v);
+                p.playSound(p.getLocation(), Sound.ENTITY_IRONGOLEM_ATTACK, 10.0F, 2.0F);
+                e.setCancelled(true);
+            }
+
+            if (getConfig().getInt("Sound") == 3) {
+                Vector v = p.getLocation().getDirection().multiply(strength).setY(up);
+                p.setVelocity(v);
+                p.playSound(p.getLocation(), Sound.ENTITY_ENDERDRAGON_FLAP, 10.0F, 2.0F);
+                e.setCancelled(true);
+            }
+
+            if (getConfig().getInt("Sound") == 4) {
+                Vector v = p.getLocation().getDirection().multiply(strength).setY(up);
+                p.setVelocity(v);
+                p.playSound(p.getLocation(), Sound.ENTITY_BLAZE_DEATH, 1.0F, 1.0F);
+                e.setCancelled(true);
+            }
+            disableFall.add(p.getName());
+        }
+    }
+}
+ 
