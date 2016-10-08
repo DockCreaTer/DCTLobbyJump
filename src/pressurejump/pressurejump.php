@@ -1,6 +1,6 @@
 <?php
 
-namespace PPjump;
+namespace PressureJump;
 
 use pocketmine\block\PressurePlate;
 use pocketmine\command\Command;
