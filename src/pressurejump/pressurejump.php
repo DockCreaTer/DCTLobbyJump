@@ -20,15 +20,15 @@ use pocketmine\utils\Config;
 class pressurejump extends PluginBase implements Listener{
 
     public function onDisable() {
-        saveDefaultConfig();
-        System.out.println("[PressurePush] Disabled");
+        $this->saveDefaultConfig();
+        System_out_println("[PressurePush] Disabled");
     }
 
     public function onEnable() {
-        System.out.println("[PressurePush] Enabled");
-        Bukkit.getPluginManager().registerEvents(this, this);
-        getConfig().options().copyDefaults(true);
-        saveDefaultConfig();
+        System_out_println("[PressurePush] Enabled");
+        $this->getServer->getPluginManager()->registerEvents(this, this);
+        $this->getConfig()->options()->copyDefaults(true);
+        $this->saveDefaultConfig();
     }
 
     public function onCommand(CommandSender sender, Command cmd, String cmdLabel, String[] args) {
