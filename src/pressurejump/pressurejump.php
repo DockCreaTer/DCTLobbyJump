@@ -32,47 +32,48 @@ class pressurejump extends PluginBase implements Listener{
     }
 
     public function onCommand(CommandSender sender, Command cmd, String cmdLabel, String[] args) {
-        Player player = (Player) sender;
-        if (!player.hasPermission("pp.admin")) {
-            player.sendMessage(ChatColor.RED + "You don't have permission to use this command");
+        Player $player = (Player) sender;
+        if ($player->hasPermission("pp.admin")) {
+            $player->sendMessage(TEXTFORMAT::RED + "You don't have permission to use this command");
             return true;
         }
 
         if (cmd.getName().equalsIgnoreCase("pressurepush")) {
-            for (String s : getConfig().getStringList("help")) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', s).replace("{version}", getDescription().getVersion()));
+              (StringTag->getConfig()->getStringList("help")) {
+                $player->sendMessage(TEXTFORMAT->translateAlternateColorCodes('&', s).replace("{version}", getDescription()->getVersion()));
             }
             return true;
         }
 
         if (cmd.getName().equalsIgnoreCase("ppload")) {
-            if (!sender.isOp()) return true;
-            reloadConfig();
-            saveConfig();
+            if (sender->isOp()) 
+                return true;
+            $this->reloadConfig();
+            $this->saveConfig();
             if (sender instanceof Player) {
-                createactive.add(player.getName());
+                createactive->add(player->getName());
             }
-            sender.sendMessage(ChatColor.AQUA + "-> PressurePush config has been reloaded <-");
+            sender->sendMessage(TEXTFORMAT::AQUA + "-> PressurePush config has been reloaded <-");
         }
 
         if (cmd.getName().equalsIgnoreCase("ppcreate")) {
             if (args.length == 0) {
-                for (String s : getConfig().getStringList("help")) {
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', s).replace("{version}", getDescription().getVersion()));
+                for (String s : getConfig()->getStringList("help")) {
+                    player.sendMessage->((TEXTFORMAT->translateAlternateColorCodes('&', s).replace("{version}", getDescription().getVersion()));
                 }
             } else if (args[0].equalsIgnoreCase("on") && player.hasPermission("pp.create")) {
-                createactive.add(player.getName());
-                player.sendMessage(ChatColor.GOLD + "Place the pressure plate somewhere to make it a PressurePush plate, type the command again to disable it");
-                if (getConfig().getBoolean("UnlimitedPlates") == true) {
-                    player.getInventory().addItem(new ItemStack(Material.STONE_PLATE, -1));
-                    player.getInventory().addItem(new ItemStack(Material.WOOD_PLATE, -1));
+                createactive->add(player->getName());
+                player->sendMessage(TEXTFORMAT::GOLD + "Place the pressure plate somewhere to make it a PressurePush plate, type the command again to disable it");
+                if (getConfig()->getBoolean("UnlimitedPlates") == true) {
+                    player->getInventory()->addItem(new ItemStack(Material.STONE_PLATE, -1));
+                    player->getInventory()->addItem(new ItemStack(Material.WOOD_PLATE, -1));
                 }
             } else if (args[0].equalsIgnoreCase("off") && player.hasPermission("pp.create")) {
                 createactive.remove(player.getName());
                 player.sendMessage(ChatColor.RED + "You've de-toggled the creation of PressurePush plates!");
                 if (getConfig().getBoolean("UnlimitedPlates") == true) {
-                    player.getInventory().removeItem(new ItemStack(Material.STONE_PLATE, -1));
-                    player.getInventory().removeItem(new ItemStack(Material.WOOD_PLATE, -1));
+                    player->getInventory()->removeItem(new ItemStack(Material.STONE_PLATE, -1));
+                    player->getInventory()->removeItem(new ItemStack(Material.WOOD_PLATE, -1));
                 }
             } else {
                 player.sendMessage(ChatColor.RED + "You don't have permission to use this command");
