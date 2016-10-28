@@ -1,5 +1,4 @@
 <?php
-
 namespace PressureJump;
 
 use pocketmine\block\PressurePlate;
@@ -16,21 +15,32 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\plugin\PluginManager;
 use pocketmine\Server;
 use pocketmine\utils\Config;
+use pocketmine\utils\TextFormat;
 
 class pressurejump extends PluginBase implements Listener{
 
+    public function onEnable() {
+        $this->getServer->getPluginManager()->registerEvents(this, this);
+            $this->start= new Config($this->getDataFolder()."Config.yml", Config::YMAL, arry(
+            ## PressureJump by TSRlightda ##
+            ## 你可以在->http://www.tsr.tw/PMPL/找到一些實用的插件(大多是繁化) ##
+            ## 設定中的 Strength 跟 Up 是默認數字,請自行更改.例如:1.5 ##
+            ## Strength 是被推動的距離 ##
+            ## Up 是被推高的高度 ##
+            ## 祝有個愉快的一天,好好享受插件:D ##
+            ## Sound 可以被設置 : 0-4, 0 就是無聲 ##
+            Strength: 1.5
+            Up: 1.0
+            mobUse: true
+            Sound: 1
+            NoFallDamageTimeMob: 3
+            UnlimitedPlates: true));
+                $this->getLogger()->info(TEXTFORMAT::GOLD . "§cTSR.TW§e星童插件組 §6PressureJump 壓力板跳躍加載中");
+    }
     public function onDisable() {
         $this->saveDefaultConfig();
-        System_out_println("[PressurePush] Disabled");
+        $this->getLogger()->info(TEXTFORMAT::RED . "PressureJump 壓力板跳躍卸載");
     }
-
-    public function onEnable() {
-        System_out_println("[PressurePush] Enabled");
-        $this->getServer->getPluginManager()->registerEvents(this, this);
-        $this->getConfig()->options()->copyDefaults(true);
-        $this->saveDefaultConfig();
-    }
-
     public function onCommand(CommandSender sender, Command cmd, String cmdLabel, String[] args) {
         Player $player = (Player) sender;
         if ($player->hasPermission("pp.admin")) {
@@ -40,7 +50,7 @@ class pressurejump extends PluginBase implements Listener{
 
         if (cmd.getName().equalsIgnoreCase("pressurepush")) {
               (StringTag->getConfig()->getStringList("help")) {
-                $player->sendMessage(TEXTFORMAT->translateAlternateColorCodes('&', s).replace("{version}", getDescription()->getVersion()));
+                $player->sendMessage(TEXTFORMAT::GOLD . "replace("{version}", getDescription()->getVersion()"));
             }
             return true;
         }
