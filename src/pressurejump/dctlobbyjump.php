@@ -1,5 +1,5 @@
 <?php
-namespace PressureJump;
+namespace dctlobbyjump;
 
 use pocketmine\block\PressurePlate;
 use pocketmine\command\Command;
@@ -17,7 +17,7 @@ use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
 
-class pressurejump extends PluginBase implements Listener{
+class dctlobbyjump extends PluginBase implements Listener{
 
     public function onEnable() {
         $this->getServer->getPluginManager()->registerEvents(this, this);
@@ -41,7 +41,7 @@ class pressurejump extends PluginBase implements Listener{
         $this->saveDefaultConfig();
         $this->getLogger()->info(TEXTFORMAT::RED . "PressureJump 壓力板跳躍卸載");
     }
-    public function onCommand(CommandSender sender, Command cmd, String cmdLabel, String[] args) {
+    public function onCommand(CommandSender $sender, Command $cmd, String $cmdLabel, String() $args) {
         Player $player = (Player) sender;
         if ($player->hasPermission("pp.admin")) {
             $player->sendMessage(TEXTFORMAT::RED + "You don't have permission to use this command");
@@ -86,7 +86,7 @@ class pressurejump extends PluginBase implements Listener{
                     player->getInventory()->removeItem(new ItemStack(Material.WOOD_PLATE, -1));
                 }
             } else {
-                player.sendMessage(ChatColor.RED + "You don't have permission to use this command");
+                player.sendMessage(TEXTFORMAT::RED . "You don't have permission to use this command");
                 return true;
             }
         }
@@ -106,7 +106,7 @@ class pressurejump extends PluginBase implements Listener{
             Location location = event.getBlock().getLocation();
             String loc = location.getBlockX() + "-" + location.getBlockY() + "-" + location.getBlockZ() + "-" + location.getWorld().getName();
 
-            p.sendMessage(ChatColor.GREEN + "You've successfully made a PressurePush Plate");
+            p.sendMessage(TEXTFORMAT::GREEN . "You've successfully made a PressurePush Plate");
 
             List<String> locs = getConfig().getStringList("Plates.location");
             if (!locs.contains(loc)) {
