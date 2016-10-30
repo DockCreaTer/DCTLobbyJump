@@ -1,5 +1,5 @@
-name: PPjump
-main: PPjump\PPjump
+name: DCTLobbyJump
+main: Pressurejump\dctlobbyjump
 version: 1.0.0
 author: TSRlightda
 commands:
