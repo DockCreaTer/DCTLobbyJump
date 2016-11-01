@@ -1,5 +1,6 @@
 name: DCTLobbyJump
 main: Pressurejump\dctlobbyjump
+load: STARTUP
 version: 1.0.0
 author: TSRlightda
 commands:
