@@ -44,11 +44,11 @@ class dctlobbyjump extends PluginBase implements Listener{
     public function onCommand(CommandSender $sender, Command $cmd, String $cmdLabel, String() $args) {
         Player $player = (Player) sender;
         if ($player->hasPermission("pp.admin")) {
-            $player->sendMessage(TEXTFORMAT::RED + "You don't have permission to use this command");
+            $player->sendMessage(TEXTFORMAT::RED . "You don't have permission to use this command");
             return true;
         }
 
-        if (cmd.getName().equalsIgnoreCase("pressurepush")) {
+        if (cmd.getName()->equalsIgnoreCase("pressurepush")) {
               (StringTag->getConfig()->getStringList("help")) {
                 $player->sendMessage(TEXTFORMAT::GOLD . "replace("{version}", getDescription()->getVersion()"));
             }
@@ -165,34 +165,34 @@ class dctlobbyjump extends PluginBase implements Listener{
             if (!locs.contains(loc)) {
                 return;
             }
-            if (getConfig().getInt("Sound") == 0) {
+            if (getConfig()->getInt("Sound") == 0) {
                 Vector v = p.getLocation().getDirection().multiply(strength).setY(up);
                 p.setVelocity(v);
                 e.setCancelled(true);
             }
 
-            if (getConfig().getInt("Sound") == 1) {
+            if (getConfig()->getInt("Sound") == 1) {
                 Vector v = p.getLocation().getDirection().multiply(strength).setY(up);
                 p.setVelocity(v);
                 p.playSound(p.getLocation(), Sound.ENTITY_ENDERDRAGON_HURT, 10.0F, 2.0F);
                 e.setCancelled(true);
             }
 
-            if (getConfig().getInt("Sound") == 2) {
+            if (getConfig()->getInt("Sound") == 2) {
                 Vector v = p.getLocation().getDirection().multiply(strength).setY(up);
                 p.setVelocity(v);
                 p.playSound(p.getLocation(), Sound.ENTITY_IRONGOLEM_ATTACK, 10.0F, 2.0F);
                 e.setCancelled(true);
             }
 
-            if (getConfig().getInt("Sound") == 3) {
+            if (getConfig()->getInt("Sound") == 3) {
                 Vector v = p.getLocation().getDirection().multiply(strength).setY(up);
                 p.setVelocity(v);
                 p.playSound(p.getLocation(), Sound.ENTITY_ENDERDRAGON_FLAP, 10.0F, 2.0F);
                 e.setCancelled(true);
             }
 
-            if (getConfig().getInt("Sound") == 4) {
+            if (getConfig()->getInt("Sound") == 4) {
                 Vector v = p.getLocation().getDirection().multiply(strength).setY(up);
                 p.setVelocity(v);
                 p.playSound(p.getLocation(), Sound.ENTITY_BLAZE_DEATH, 1.0F, 1.0F);
